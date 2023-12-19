@@ -1,32 +1,33 @@
 const express = require("express");
 const app = express();
 const http = require("http")
-require('./db/conn');
-require("../src/models/RechargeTypeDetails.model")
-require("../src/models/RankerTime.model")
+require('./src/db/conn');
+require("./src/models/RechargeTypeDetails.model")
+
+require("./src/models/RankerTime.model")
 const Stopwatch = require('statman-stopwatch');
-const Game_loop = require("./models/game_loop")
+const Game_loop = require("./src/models/game_loop")
 
 const sw = new Stopwatch(true);
 
 const GAME_LOOP_ID = '642aab63cd300991bc2499ff'
 
 const cors = require("cors");
-const userWinModel = require("./models/userWinDummy.model")
-const FastParityModel = require("./models/FastParity.model");
+const userWinModel = require("./src/models/userWinDummy.model")
+const FastParityModel = require("./src/models/FastParity.model");
 const session = require("express-session");
-const RegisterModel = require("./models/Register.model");
-require(".././src/models/CheckInDummy.model")
+const RegisterModel = require("./src/models/Register.model");
+require("./src/models/CheckInDummy.model")
 const { Server } = require("socket.io")
 const path = require("path");
-const fastParityResultModel = require("./models/fastParityResult.model");
-const WalletModel = require("./models/Wallet.model");
-const RechargeSuccessModel = require("./models/RechargeSuccessDummy.model");
-const userAccountDetailModel = require("./models/userAccountDetail.model");
-const CheckInDummyModel = require(".././src/models/CheckInDummy.model");
-const MineSweeperModel = require("./models/MineSweeper.model");
-const AgentWalletModel = require("./models/AgentWallet.model");
-const IncomeDetailsModel = require("./models/IncomeDetails.model");
+const fastParityResultModel = require("./src/models/fastParityResult.model");
+const WalletModel = require("./src/models/Wallet.model");
+const RechargeSuccessModel = require("./src/models/RechargeSuccessDummy.model");
+const userAccountDetailModel = require("./src/models/userAccountDetail.model");
+const CheckInDummyModel = require("./src/models/CheckInDummy.model");
+const MineSweeperModel = require("./src/models/MineSweeper.model");
+const AgentWalletModel = require("./src/models/AgentWallet.model");
+const IncomeDetailsModel = require("./src/models/IncomeDetails.model");
 const crypto = require("crypto");
 var server = http.createServer(app)
 var io = new Server(server, {
@@ -42,18 +43,18 @@ const port = process.env.PORT;
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use("/avtar", express.static(path.join(__dirname, "../images")))
-const authRouter = require("./routes/Auth.routes");
+const authRouter = require("./src/routes/Auth.routes");
 app.use('/api', authRouter)
-const mainRouter = require("./routes/Main.routes");
-const RankerTimeModel = require("../src/models/RankerTime.model");
-const crashresultModel = require("./models/crashresult.model");
-const CrashModel = require("./models/Crash.model");
+const mainRouter = require("./src/routes/Main.routes");
+const RankerTimeModel = require("./src/models/RankerTime.model");
+const crashresultModel = require("./src/models/crashresult.model");
+const CrashModel = require("./src/models/Crash.model");
 
 app.set(
     "socketio", io
 )
 app.use('/api', mainRouter)
-const admin = require('./routes/Admin/Adminroute')
+const admin = require('./src/routes/Admin/Adminroute')
 app.use('/admin',admin)
     
 const year = new Date().getFullYear().toString().slice(-2);
@@ -78,7 +79,9 @@ function startTimer(duration, display) {
 startTimer(Date.now());
 
 
-
+app.get('/test', async (req,res) => {
+    res.send('Hello Fiewin')
+})
 
 
 app.get('/get_game_status', async (req, res) => {
