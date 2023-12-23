@@ -36,12 +36,18 @@ var io = new Server(server, {
     },
 })
 
+app.use((req, res, next) => {
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
+    res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+    res.setHeader('Access-Control-Allow-Credentials', 'true');
+    next();
+});
 const corsOptions = {
     origin: '*',
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
-    optionsSuccessStatus: 200 
+    optionsSuccessStatus: 200
 };
-
 app.use(cors(corsOptions))
 require("dotenv").config();
 const port = process.env.PORT;
@@ -60,8 +66,8 @@ app.set(
 )
 app.use('/api', mainRouter)
 const admin = require('./src/routes/Admin/Adminroute')
-app.use('/admin',admin)
-    
+app.use('/admin', admin)
+
 const year = new Date().getFullYear().toString().slice(-2);
 const month = ("0" + (new Date().getMonth() + 1)).toString().slice(-2)
 const day = String(new Date().getDate()).padStart(2, '0');
@@ -84,7 +90,7 @@ function startTimer(duration, display) {
 startTimer(Date.now());
 
 
-app.get('/test', async (req,res) => {
+app.get('/test', async (req, res) => {
     res.send('Hello Fiewin')
 })
 
@@ -569,7 +575,7 @@ io.on("connection", async (socket) => {
 
     setInterval(async function () {
         socket.emit("countdown", timers)
-     
+
         // socket.broadcast.emit("countdown", seconds)
         if (timers == '02') {
             // socket.on("check_result", async (data) => {
@@ -716,7 +722,7 @@ io.on("connection", async (socket) => {
                         socket.broadcast.emit("period_number1", fullDate + (Number(index) + 1))
                     }
                 }
-               
+
                 else {
                     const period_number1 = await fastParityResultModel.find({ period: date_check + num })
                     var res
@@ -725,10 +731,10 @@ io.on("connection", async (socket) => {
                         ["R"], ["V", "R"], ["V", "G"]]
                         var aa = []
                         aa = arr[Math.floor(Math.random() * arr.length)]
-                        var numberRand = [0,1,2,3,4,5,6,7,8,9]
-                        var numRand 
+                        var numberRand = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+                        var numRand
                         numRand = numberRand[Math.floor(Math.random() * numberRand.length)]
-                    
+
                         res = new fastParityResultModel({
                             period: date_check + num, winuser: [],
                             win_number: { color: aa, number: numRand },
@@ -871,7 +877,7 @@ io.on("connection", async (socket) => {
                 date: Date.parse(new Date())
             });
             await userAccountData1.save();
-            
+
             await WalletModel.updateMany({ userId: data.userId }, { amount: (Number(value[0].amount) + Number(win_point)).toFixed(2) })
         }
         const fast1 = await MineSweeperModel.find({ _id: id })
@@ -882,7 +888,7 @@ io.on("connection", async (socket) => {
 
     socket.on("crash_join", async (data) => {
         const { round_number, user, target, amount } = data
-       
+
         socket.emit("add_member", { user: user, stop: "-", point: Number(amount) - Number(amount) * 3 / 100, amount: '-', round_number })
         socket.broadcast.emit("add_member", { user: user, stop: "-", point: Number(amount) - Number(amount) * 3 / 100, amount: '-', round_number })
         const amount_of_user = await WalletModel.find({ userId: user })
@@ -897,7 +903,7 @@ io.on("connection", async (socket) => {
         // await userAccountData1.save();
         await WalletModel.updateMany({ userId: user }, { amount: (amount_of_user[0].amount - amount).toFixed(2) })
 
-        var a = new CrashModel({ round_number, user, target, point:amount,amount: Number(amount) - Number(amount) * 3 / 100 })
+        var a = new CrashModel({ round_number, user, target, point: amount, amount: Number(amount) - Number(amount) * 3 / 100 })
         await a.save()
 
 
@@ -908,7 +914,7 @@ io.on("connection", async (socket) => {
     });
 })
 server.listen(port, async () => {
-   
+
     // const data1 = [{ color: "red" }, { color: "green" }, { color: "green" },{ color: "red" }]
     // var data2 = []
     // data1.map((data, index) => {
