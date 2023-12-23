@@ -36,8 +36,13 @@ var io = new Server(server, {
     },
 })
 
+const corsOptions = {
+    origin: '*',
+    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+    optionsSuccessStatus: 200 
+};
 
-app.use(cors())
+app.use(cors(corsOptions))
 require("dotenv").config();
 const port = process.env.PORT;
 app.use(express.json());
