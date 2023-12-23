@@ -32,7 +32,9 @@ const crypto = require("crypto");
 var server = http.createServer(app)
 var io = new Server(server, {
     cors: {
-        origin: "*"
+        origin: "*",
+        methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+        optionsSuccessStatus: 200
     },
 })
 
